@@ -22,8 +22,8 @@ class FDTDsimulationTest(unittest.TestCase):
         self.__init_meshnode_field_in_fdtd_simulation()
         mock_update_magnetic_field.return_value = 2.0
         self.fdtdsimulation.envole_field_with_time()
-        expectedresult = self.fdtdsimulation.magnetic_field_time
-        npt.assert_array_equal(expectedresult, np.array([[2.0, 2.0, 3.0], [2.0, 2.0, 3.0]]))
+        result = self.fdtdsimulation.magnetic_field_time
+        npt.assert_array_equal(result, np.array([[2.0, 2.0, 2.0], [2.0, 2.0, 2.0]]))
 
     @patch.object(FDTDsimulation, '_FDTDsimulation__attach_additive_source')
     @patch.object(Singlenodefield, 'update_electric_field')
@@ -32,8 +32,8 @@ class FDTDsimulationTest(unittest.TestCase):
         mock__FDTDsimulation__attach_additive_source.return_value=0
         mock_update_electric_field.return_value = 2.0
         self.fdtdsimulation.envole_field_with_time()
-        expectedresult = self.fdtdsimulation.electric_field_time
-        npt.assert_array_equal(expectedresult, np.array([[1.0, 2.0, 2.0], [1.0, 2.0, 2.0]]))
+        result = self.fdtdsimulation.electric_field_time
+        npt.assert_array_equal(result, np.array([[2.0, 2.0, 2.0], [2.0, 2.0, 2.0]]))
 
     def __init_meshnode_field_in_fdtd_simulation(self):
         self.fdtdsimulation.meshnodefield.magnetic_field_y = np.array([1.0, 2.0, 3.0])
@@ -51,8 +51,8 @@ class FDTDsimulationTest(unittest.TestCase):
     def test_reshape_field_time(self):
         self.__initiate_fdtdsimulation_variable()
         self.fdtdsimulation._FDTDsimulation__reshape_field_time()
-        expectedvalue = self.fdtdsimulation.magnetic_field_time
-        npt.assert_array_equal(expectedvalue, np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]))
+        result = self.fdtdsimulation.magnetic_field_time
+        npt.assert_array_equal(result, np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]))
 
     def __initiate_fdtdsimulation_variable(self):
         self.fdtdsimulation.magnetic_field_time = np.array([1, 2, 3, 4, 5, 6])

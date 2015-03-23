@@ -40,4 +40,4 @@ class FDTDsimulation():
 
     def __attach_additive_source(self, time_node_index):
         field_at_source_node = self.source.get_additive_source_function_at_time_node_index(time_node_index)
-        self.meshnodefield.electric_field_z[self.source.source_node] = field_at_source_node
+        self.meshnodefield.electric_field_z[self.source.source_node] += field_at_source_node

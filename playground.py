@@ -4,12 +4,12 @@ import numpy as np
 from fdtdcode.fdtd_simulation import FDTDsimulation
 
 
-fdtdsimulation = FDTDsimulation(200, 250)
+fdtdsimulation = FDTDsimulation(200, 450)
 fdtdsimulation.source.source_node = 50
 fdtdsimulation.envole_field_with_time()
 
 import matplotlib.pyplot as plt
-x = np.arange(0, 200)
-y = fdtdsimulation.electric_field_time[30, :]
-plt.plot(x, y)
+fig = plt.figure(figsize=(6, 3.2))
+ax = fig.add_subplot(111)
+plt.imshow(fdtdsimulation.electric_field_time)
 plt.show()

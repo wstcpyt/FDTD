@@ -9,6 +9,7 @@ class Meshnodefield():
         self.electric_field_z = np.zeros(self.mesh_size)
 
     def update_magnetic_field_mesh(self):
+        self.__set_magnetic_boundary_condition()
         for field_node_index in range(0, self.mesh_size-1):
             self.magnetic_field_y[field_node_index] = \
                 Singlenodefield.update_magnetic_field(self.magnetic_field_y[field_node_index],
@@ -17,12 +18,19 @@ class Meshnodefield():
         return self.magnetic_field_y
 
     def update_electric_field_mesh(self):
+        self.__set_electric_boundary_condition()
         for field_node_index in range(1, self.mesh_size):
             self.electric_field_z[field_node_index] = \
                 Singlenodefield.update_electric_field(self.electric_field_z[field_node_index],
                                                       self.magnetic_field_y[field_node_index-1],
                                                       self.magnetic_field_y[field_node_index])
         return self.electric_field_z
+
+    def __set_electric_boundary_condition(self):
+        self.electric_field_z[0] = self.electric_field_z[1]
+
+    def __set_magnetic_boundary_condition(self):
+        self.magnetic_field_y[self.mesh_size-1] = self.magnetic_field_y[self.mesh_size-2]
 
 
 class Singlenodefield():
