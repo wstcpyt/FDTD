@@ -1,11 +1,5 @@
 __author__ = 'yutongpang'
 import unittest
-from unittest.mock import patch
-
-import numpy.testing as npt
-import numpy as np
-
-from fdtdcode.field import Singlenodefield, Meshnodefield
 from fdtdcode.source import Source
 
 
@@ -18,4 +12,3 @@ class SourceTest(unittest.TestCase):
 
     def test_set_additive_source_time_dependent_functon(self):
         self.source.get_additive_source_function_at_time_node_index(20)
-
