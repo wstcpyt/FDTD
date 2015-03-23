@@ -1,10 +1,13 @@
 __author__ = 'yutongpang'
 import numpy as np
+from math import exp
+
 
 class Meshnodefield():
-    magnetic_field_y = np.array([1.0, 2.0, 3.0])
-    electric_field_z = np.array([1.0, 2.0, 3.0])
-    mesh_size = len(electric_field_z)
+    def __init__(self, mesh_size):
+        self.mesh_size = mesh_size
+        self.magnetic_field_y = np.zeros(self.mesh_size)
+        self.electric_field_z = np.zeros(self.mesh_size)
 
     def update_magnetic_field_mesh(self):
         for field_node_index in range(0, self.mesh_size-1):
@@ -14,17 +17,21 @@ class Meshnodefield():
                                                       self.electric_field_z[field_node_index+1])
         return self.magnetic_field_y
 
-    def update_electric_field_mesh(self):
+    def update_electric_field_mesh(self, time_node_index):
         for field_node_index in range(1, self.mesh_size):
             self.electric_field_z[field_node_index] = \
                 Singlenodefield.update_electric_field(self.electric_field_z[field_node_index],
                                                       self.magnetic_field_y[field_node_index-1],
                                                       self.magnetic_field_y[field_node_index])
-            self.__set_source_condition()
+            self.__set_source_condition(time_node_index)
         return self.electric_field_z
 
-    def __set_source_condition(self):
-        self.electric_field_z[0] = 0.0
+    def __set_source_condition(self, time_node_index):
+        self.electric_field_z[0] = self.__get_souce_function(time_node_index)
+
+    @staticmethod
+    def __get_souce_function(time_node_index):
+        return exp(-(time_node_index - 30.0)*(time_node_index - 30.0)/100)
 
 
 class Singlenodefield():

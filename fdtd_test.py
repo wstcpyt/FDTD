@@ -1,6 +1,7 @@
 __author__ = 'yutongpang'
 import unittest
 from field import Singlenodefield, Meshnodefield
+from source import Source
 from fdtd_simulation import FDTDsimulation
 import numpy.testing as npt
 import numpy as np
@@ -9,7 +10,11 @@ from unittest.mock import patch
 
 class FDTDsimulationTest(unittest.TestCase):
     def setUp(self):
-        self.fdtdsimulation = FDTDsimulation()
+        self.fdtdsimulation = FDTDsimulation(3, 2)
+
+    def test_fdtdsimulation_can_init_mesh_size_and_max_time(self):
+        self.assertEqual(self.fdtdsimulation.mesh_size, 3)
+        self.assertEqual(self.fdtdsimulation.max_time, 2)
 
     @patch.object(Meshnodefield, 'update_magnetic_field_mesh')
     def test_envole_field_with_time_magnectic(self, mock_update_magnetic_field_mesh):
@@ -36,9 +41,21 @@ class FDTDsimulationTest(unittest.TestCase):
         self.fdtdsimulation.electric_field_time = np.array([1, 2, 3, 4, 5, 6])
         self.fdtdsimulation.max_time = 2
 
+
+class SourceTest(unittest.TestCase):
+    def setUp(self):
+        self.source = Source(50)
+
+    def test_source_can_init_source_node(self):
+        pass
+
+    def test_set_additive_source_time_dependent_functon(self):
+        self.source.get_additive_source_function_at_time_node_index(20)
+
+
 class MeshnodefieldTest(unittest.TestCase):
     def setUp(self):
-        self.meshnodefield = Meshnodefield()
+        self.meshnodefield = Meshnodefield(2)
 
     @patch.object(Singlenodefield, 'update_magnetic_field')
     def test_update_magnetic_field_mesh(self, mock_update_magnetic_field):
@@ -53,13 +70,20 @@ class MeshnodefieldTest(unittest.TestCase):
         self.__initiate_meshnodefield_variable()
         mock_Meshnodefield__set_source_condition.return_value = None
         mock_update_electric_field.return_value = 2.0
-        expectedresult = self.meshnodefield.update_electric_field_mesh()
+        expectedresult = self.meshnodefield.update_electric_field_mesh(0)
         npt.assert_array_equal(expectedresult, np.array([1.0, 2.0, 2.0]))
 
+    @patch.object(Meshnodefield, '_Meshnodefield__get_souce_function')
     @patch.object(Singlenodefield, 'update_electric_field')
-    def test_update_electric_field_mesh_with_source(self, mock_update_electric_field):
+    def test_update_electric_field_mesh_with_source(self, mock_update_electric_field, mock_Meshnodefield__get_souce_function):
+        self.__initiate_meshnodefield_variable()
         mock_update_electric_field.return_value = 2.0
+        mock_Meshnodefield__get_souce_function.return_value = 0
+        expectedresult = self.meshnodefield.update_electric_field_mesh(0)
+        npt.assert_array_equal(expectedresult, np.array([0.0, 2.0, 2.0]))
 
+    def test_meshnodefield_can_init_mesh_size(self):
+        self.assertEqual(self.meshnodefield.mesh_size, 2)
 
     def __initiate_meshnodefield_variable(self):
         self.meshnodefield.magnetic_field_y = np.array([1.0, 2.0, 3.0])
