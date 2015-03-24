@@ -2,6 +2,7 @@ __author__ = 'yutongpang'
 import numpy as np
 from fdtdcode.field import Meshnodefield
 from fdtdcode.source import Source
+from fdtdcode.structure import Permittivity
 from fdtdcode.boundaryconditon import TFSFboundarycondition
 
 
@@ -9,7 +10,9 @@ class FDTDsimulation():
     def __init__(self, mesh_size, max_time):
         self.mesh_size = mesh_size
         self.max_time = max_time
+        self.permittivity = Permittivity(self.mesh_size)
         self.meshnodefield = Meshnodefield(mesh_size)
+        self.meshnodefield.relative_permittivity = self.permittivity.relative_permittivity
         self.source = Source(0)
         self.tfsfboundarycondition = TFSFboundarycondition(0)
 
@@ -26,9 +29,9 @@ class FDTDsimulation():
 
     def __reshape_field_time(self):
         row_length = self.max_time
-        col_length = len(self.magnetic_field_time)/row_length
-        self.magnetic_field_time = self.magnetic_field_time.reshape(row_length, col_length)
-        self.electric_field_time = self.electric_field_time.reshape(row_length, col_length)
+        col_length_electric = len(self.electric_field_time)/row_length
+        self.magnetic_field_time = self.magnetic_field_time.reshape(row_length, col_length_electric)
+        self.electric_field_time = self.electric_field_time.reshape(row_length, col_length_electric)
 
     def __envole_electric_field(self, time_node_index):
         self.meshnodefield.update_electric_field_mesh()

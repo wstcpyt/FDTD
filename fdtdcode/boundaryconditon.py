@@ -1,6 +1,6 @@
 __author__ = 'yutongpang'
 from math import exp
-from fdtdcode.field import Singlenodefield
+from fdtdcode.field import Meshnodefield
 
 
 class TFSFboundarycondition():
@@ -16,7 +16,7 @@ class TFSFboundarycondition():
 
     @staticmethod
     def __get_magnetic_source_correction(time_node_index):
-        return exp(-(time_node_index - 30.0)**2/100.0)/Singlenodefield.updatecoefficient
+        return exp(-(time_node_index - 30.0)**2/100.0)/Meshnodefield.updatecoefficient
 
     @staticmethod
     def __get_electric_source_correction(time_node_index):
