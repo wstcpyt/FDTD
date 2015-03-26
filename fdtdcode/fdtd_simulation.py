@@ -2,7 +2,7 @@ __author__ = 'yutongpang'
 import numpy as np
 from fdtdcode.field import Meshnodefield
 from fdtdcode.source import Source
-from fdtdcode.structure import Permittivity
+from fdtdcode.structure import Structureparameter
 from fdtdcode.boundaryconditon import TFSFboundarycondition
 
 
@@ -10,9 +10,13 @@ class FDTDsimulation():
     def __init__(self, mesh_size, max_time):
         self.mesh_size = mesh_size
         self.max_time = max_time
-        self.permittivity = Permittivity(self.mesh_size)
+        self.structureparameter = Structureparameter(self.mesh_size)
         self.meshnodefield = Meshnodefield(mesh_size)
-        self.meshnodefield.relative_permittivity = self.permittivity.relative_permittivity
+        self.meshnodefield.relative_permittivity = self.structureparameter.relative_permittivity
+        self.meshnodefield.lossy_matrial_update_coefficient_electric = \
+            self.structureparameter.lossy_matrial_update_coefficient_electric
+        self.meshnodefield.lossy_matrial_update_coefficient_magnetic = \
+            self.structureparameter.lossy_matrial_update_coefficient_magnetic
         self.source = Source(0)
         self.tfsfboundarycondition = TFSFboundarycondition(0)
 
