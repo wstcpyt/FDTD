@@ -48,25 +48,30 @@ class MeshnodefieldTest(unittest.TestCase):
         result = self.meshnodefield._update_magnetic_field_single_node(1)
         self.assertEquals(2+1/self.meshnodefield.updatecoefficient, result)
 
-    @patch.object(Meshnodefield, '_get_relative_permittivity')
-    def test_update_electric_field_single_node(self, mock_get_relative_permittivity):
+    def test_update_electric_field_single_node(self):
         self.__initiate_meshnodefield_variable()
-        mock_get_relative_permittivity.return_value = 1
         result = self.meshnodefield._update_electric_field_single_node(1)
         self.assertEquals(2 + 1*self.meshnodefield.updatecoefficient, result)
 
-    @patch.object(Meshnodefield, '_get_relative_permittivity')
-    def test_update_electric_field_single_node_call_get_relative_permittivity_function(self,
-                                                                                       mock_get_relative_permittivity):
+    @patch.object(Meshnodefield, '_get_lossy_matrial_update_coefficient_magnetic')
+    @patch.object(Meshnodefield, '_get_lossy_matrial_update_coefficient_electric')
+    def test_update_electric_field_single_node_call_function(self,mock_get_lossy_matrial_update_coefficient_electric,
+                                                             mock_get_lossy_matrial_update_coefficient_magnetic):
         self.__initiate_meshnodefield_variable()
-        mock_get_relative_permittivity.return_value = 1
         self.meshnodefield._update_electric_field_single_node(1)
-        mock_get_relative_permittivity.assert_called_once_with(1)
+        mock_get_lossy_matrial_update_coefficient_electric.assert_called_once_with(1)
+        mock_get_lossy_matrial_update_coefficient_magnetic.assert_called_once_with(1)
 
-    def test_get_relative_permittivity(self):
+    def test_get_lossy_matrial_update_coefficient_electric(self):
         self.__initiate_meshnodefield_variable()
-        self.meshnodefield.relative_permittivity = np.array([1, 2, 3])
-        result = self.meshnodefield._get_relative_permittivity(1)
+        self.meshnodefield.lossy_matrial_update_coefficient_electric = np.array([1, 2, 3])
+        result = self.meshnodefield._get_lossy_matrial_update_coefficient_electric(1)
+        self.assertEquals(2, result)
+
+    def test_get_lossy_matrial_update_coefficient_magnetic(self):
+        self.__initiate_meshnodefield_variable()
+        self.meshnodefield.lossy_matrial_update_coefficient_magnetic = np.array([1, 2, 3])
+        result = self.meshnodefield._get_lossy_matrial_update_coefficient_magnetic(1)
         self.assertEquals(2, result)
 
     def __initiate_meshnodefield_variable(self):

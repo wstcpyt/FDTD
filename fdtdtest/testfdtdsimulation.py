@@ -45,10 +45,8 @@ class FDTDsimulationTest(unittest.TestCase):
         self.fdtdsimulation._attach_additive_source(0)
         self.assertEqual(50, self.fdtdsimulation.meshnodefield.electric_field_z[source_node])
 
-    @patch.object(Meshnodefield, '_get_relative_permittivity')
     @patch.object(FDTDsimulation, '_add_electric_tfsf_source_correction')
-    def test_envole_electric_field_call_source_correction(self, mock_call_function, mock_get_relative_permittivity):
-        mock_get_relative_permittivity.return_value = 1
+    def test_envole_electric_field_call_source_correction(self, mock_call_function):
         self.fdtdsimulation._envole_electric_field(0)
         mock_call_function.assert_called_once_with(0)
 
