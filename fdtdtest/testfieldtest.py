@@ -48,10 +48,17 @@ class MeshnodefieldTest(unittest.TestCase):
         result = self.meshnodefield._update_magnetic_field_single_node(1)
         self.assertEquals(2+1/self.meshnodefield.updatecoefficient, result)
 
-    def test_update_electric_field_single_node(self):
+    @patch.object(Meshnodefield, '_get_lossy_matrial_update_coefficient_magnetic')
+    @patch.object(Meshnodefield, '_get_lossy_matrial_update_coefficient_electric')
+    def test_update_electric_field_single_node(self, mock_get_lossy_matrial_update_coefficient_electric,
+                                               mock_get_lossy_matrial_update_coefficient_magnetic):
         self.__initiate_meshnodefield_variable()
+        mock_get_lossy_matrial_update_coefficient_electric.return_value = 2.0
+        mock_get_lossy_matrial_update_coefficient_magnetic.return_value = 2.0
         result = self.meshnodefield._update_electric_field_single_node(1)
-        self.assertEquals(2 + 1*self.meshnodefield.updatecoefficient, result)
+        mock_get_lossy_matrial_update_coefficient_electric.assert_called_once_with(1)
+        mock_get_lossy_matrial_update_coefficient_magnetic.assert_called_once_with(1)
+        self.assertEquals(2 * 2.0 + 1*2.0, result)
 
     @patch.object(Meshnodefield, '_get_lossy_matrial_update_coefficient_magnetic')
     @patch.object(Meshnodefield, '_get_lossy_matrial_update_coefficient_electric')

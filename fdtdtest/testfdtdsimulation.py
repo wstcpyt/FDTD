@@ -7,7 +7,6 @@ import numpy as np
 from fdtdcode.fdtd_simulation import FDTDsimulation
 from fdtdcode.source import Source
 from fdtdcode.boundaryconditon import TFSFboundarycondition
-from fdtdcode.field import Meshnodefield
 
 
 class FDTDsimulationTest(unittest.TestCase):

@@ -41,7 +41,7 @@ class Structureparameter():
         if field_node_index < 100:
             return 1.0
         else:
-            return (1.0 - self.loss)/(1 + self.loss)
+            return (1.0 - self.loss)/(1.0 + self.loss)
 
     @staticmethod
     def _get_relative_permittivity_in_single_node(field_node_index):
