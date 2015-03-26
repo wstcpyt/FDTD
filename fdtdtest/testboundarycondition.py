@@ -14,8 +14,8 @@ class TFSFboundaryconditonTEST(unittest.TestCase):
         result = self.tfsfboundarycondition.magnetic_tfsf_node_index
         self.assertEquals(result, 1)
 
-    @patch.object(TFSFboundarycondition, '_TFSFboundarycondition__get_electric_source_correction')
-    @patch.object(TFSFboundarycondition, '_TFSFboundarycondition__get_magnetic_source_correction')
+    @patch.object(TFSFboundarycondition, '_get_electric_source_correction')
+    @patch.object(TFSFboundarycondition, '_get_magnetic_source_correction')
     def test_incidence_source_correction_function(self, mock_magnetic_source_function, mock_electric_source_function):
         self.tfsfboundarycondition.get_incidence_source_correction(0, 0)
         mock_magnetic_source_function.assert_called_once_with(0)

@@ -21,38 +21,39 @@ class FDTDsimulation():
 
     def envole_field_with_time(self):
         for time_node_index in range(0, self.max_time):
-            self.__envole_magnetic_field(time_node_index)
-            self.__envole_electric_field(time_node_index)
-            self.__attach_additive_source(time_node_index)
-            self.__apend_field_to_field_time_array()
-        self.__reshape_field_time()
+            self._envole_magnetic_field(time_node_index)
+            self._envole_electric_field(time_node_index)
+            self._attach_additive_source(time_node_index)
+            self._apend_field_to_field_time_array()
+        self._reshape_field_time()
 
-    def __reshape_field_time(self):
+    def _reshape_field_time(self):
         row_length = self.max_time
         col_length_electric = len(self.electric_field_time)/row_length
-        self.magnetic_field_time = self.magnetic_field_time.reshape(row_length, col_length_electric)
+        col_length_magnetic = len(self.magnetic_field_time)/row_length
+        self.magnetic_field_time = self.magnetic_field_time.reshape(row_length, col_length_magnetic)
         self.electric_field_time = self.electric_field_time.reshape(row_length, col_length_electric)
 
-    def __envole_electric_field(self, time_node_index):
+    def _envole_electric_field(self, time_node_index):
         self.meshnodefield.update_electric_field_mesh()
-        self.__add_electric_tfsf_source_correction(time_node_index)
+        self._add_electric_tfsf_source_correction(time_node_index)
 
-    def __envole_magnetic_field(self, time_node_index):
+    def _envole_magnetic_field(self, time_node_index):
         self.meshnodefield.update_magnetic_field_mesh()
-        self.__add_magnetic_tfsf_source_correction(time_node_index)
+        self._add_magnetic_tfsf_source_correction(time_node_index)
 
-    def __add_magnetic_tfsf_source_correction(self, time_node_index):
+    def _add_magnetic_tfsf_source_correction(self, time_node_index):
         correction_term = self.tfsfboundarycondition.get_incidence_source_correction(time_node_index, 0)
         self.meshnodefield.magnetic_field_y[self.tfsfboundarycondition.magnetic_tfsf_node_index] -= correction_term
 
-    def __add_electric_tfsf_source_correction(self, time_node_index):
+    def _add_electric_tfsf_source_correction(self, time_node_index):
         correction_term = self.tfsfboundarycondition.get_incidence_source_correction(time_node_index, 1)
         self.meshnodefield.electric_field_z[self.tfsfboundarycondition.magnetic_tfsf_node_index + 1] += correction_term
 
-    def __apend_field_to_field_time_array(self):
+    def _apend_field_to_field_time_array(self):
         self.electric_field_time = np.append(self.electric_field_time, self.meshnodefield.electric_field_z)
         self.magnetic_field_time = np.append(self.magnetic_field_time, self.meshnodefield.magnetic_field_y)
 
-    def __attach_additive_source(self, time_node_index):
+    def _attach_additive_source(self, time_node_index):
         field_at_source_node = self.source.get_additive_source_function_at_time_node_index(time_node_index)
         self.meshnodefield.electric_field_z[self.source.source_node] += field_at_source_node
