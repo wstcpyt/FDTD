@@ -1,4 +1,6 @@
 __author__ = 'yutongpang'
+import sys
+sys.path.append('/Users/yutongpang/PycharmProjects/FDTD')
 import unittest
 from unittest.mock import patch
 from fdtdcode.boundaryconditon import TFSFboundarycondition
