@@ -8,8 +8,8 @@ class Structureparameter():
         self.mesh_size = mesh_size
         self.loss = 0.01
         self.relative_permittivity = self._set_relative_permittivity()
-        self.lossy_matrial_update_coefficient_electric = self._set_lossy_matrial_update_coefficient_electric()
-        self.lossy_matrial_update_coefficient_magnetic = self._set_lossy_matrial_update_coefficient_magnetic()
+        self.electric_field_update_coefficients_E = self._set_electric_field_update_coefficients_E()
+        self.electric_field_update_coefficients_H = self._set_electric_field_update_coefficients_H()
 
     def _set_relative_permittivity(self):
         relative_permittivity = np.zeros(self.mesh_size)
@@ -17,27 +17,27 @@ class Structureparameter():
             relative_permittivity[field_node_index] = self._get_relative_permittivity_in_single_node(field_node_index)
         return relative_permittivity
 
-    def _set_lossy_matrial_update_coefficient_electric(self):
-        lossy_matrial_update_coefficient_electric = np.zeros(self.mesh_size)
+    def _set_electric_field_update_coefficients_E(self):
+        electric_field_update_coefficients_E = np.zeros(self.mesh_size)
         for field_node_index in range(self.mesh_size):
-            lossy_matrial_update_coefficient_electric[field_node_index] \
-                = self._get_lossy_matrial_update_coefficient_electric(field_node_index)
-        return lossy_matrial_update_coefficient_electric
+            electric_field_update_coefficients_E[field_node_index] \
+                = self._get_electric_field_update_coefficients_E(field_node_index)
+        return electric_field_update_coefficients_E
 
-    def _set_lossy_matrial_update_coefficient_magnetic(self):
-        lossy_matrial_update_coefficient_magnetic = np.zeros(self.mesh_size)
+    def _set_electric_field_update_coefficients_H(self):
+        electric_field_update_coefficients_H = np.zeros(self.mesh_size)
         for field_node_index in range(self.mesh_size):
-            lossy_matrial_update_coefficient_magnetic[field_node_index] \
-                = self._get_lossy_matrial_update_coefficient_magnetic(field_node_index)
-        return lossy_matrial_update_coefficient_magnetic
+            electric_field_update_coefficients_H[field_node_index] \
+                = self._get_electric_field_update_coefficients_H(field_node_index)
+        return electric_field_update_coefficients_H
 
-    def _get_lossy_matrial_update_coefficient_magnetic(self, field_node_index):
+    def _get_electric_field_update_coefficients_H(self, field_node_index):
         if field_node_index < 100:
             return Meshnodefield.updatecoefficient
         else:
-            return Meshnodefield.updatecoefficient/9.0/(1.0 + self.loss)
+            return Meshnodefield.updatecoefficient/self.relative_permittivity[field_node_index]/(1.0 + self.loss)
 
-    def _get_lossy_matrial_update_coefficient_electric(self, field_node_index):
+    def _get_electric_field_update_coefficients_E(self, field_node_index):
         if field_node_index < 100:
             return 1.0
         else:

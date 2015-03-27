@@ -1,5 +1,4 @@
 __author__ = 'yutongpang'
-import numpy as np
 
 from fdtdcode.fdtd_simulation import FDTDsimulation
 

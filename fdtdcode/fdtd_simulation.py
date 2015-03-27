@@ -13,10 +13,10 @@ class FDTDsimulation():
         self.structureparameter = Structureparameter(self.mesh_size)
         self.meshnodefield = Meshnodefield(mesh_size)
         self.meshnodefield.relative_permittivity = self.structureparameter.relative_permittivity
-        self.meshnodefield.lossy_matrial_update_coefficient_electric = \
-            self.structureparameter.lossy_matrial_update_coefficient_electric
-        self.meshnodefield.lossy_matrial_update_coefficient_magnetic = \
-            self.structureparameter.lossy_matrial_update_coefficient_magnetic
+        self.meshnodefield.electric_field_update_coefficients_E = \
+            self.structureparameter.electric_field_update_coefficients_E
+        self.meshnodefield.electric_field_update_coefficients_H = \
+            self.structureparameter.electric_field_update_coefficients_H
         self.source = Source(0)
         self.tfsfboundarycondition = TFSFboundarycondition(0)
 
