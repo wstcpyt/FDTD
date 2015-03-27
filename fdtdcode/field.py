@@ -16,7 +16,7 @@ class Meshnodefield():
         self.electric_field_z = np.zeros(mesh_size)
 
     def update_magnetic_field_mesh(self):
-        for field_node_index in range(0, self.mesh_size-1):
+        for field_node_index in range(0, self.mesh_size - 1):
             self.magnetic_field_y[field_node_index] = self._update_magnetic_field_single_node(field_node_index)
         return self.magnetic_field_y
 
@@ -31,8 +31,8 @@ class Meshnodefield():
         self.electric_field_z[self.mesh_size - 1] = self.electric_field_z[self.mesh_size - 2]
 
     def _update_magnetic_field_single_node(self, field_node_index):
-        updatingterm = (self.electric_field_z[field_node_index+1] -
-                        self.electric_field_z[field_node_index])/self.updatecoefficient
+        updatingterm = (self.electric_field_z[field_node_index + 1] -
+                        self.electric_field_z[field_node_index]) / self.updatecoefficient
         updatedresult = self.magnetic_field_y[field_node_index] + updatingterm
         return updatedresult
 
@@ -42,8 +42,8 @@ class Meshnodefield():
         electric_field_update_coefficients_h \
             = self._get_electric_field_update_coefficients_h(field_node_index)
         updatingterm = (self.magnetic_field_y[field_node_index] -
-                        self.magnetic_field_y[field_node_index-1])*electric_field_update_coefficients_h
-        updatedresult = electric_field_update_coefficients_e*self.electric_field_z[field_node_index] + updatingterm
+                        self.magnetic_field_y[field_node_index - 1]) * electric_field_update_coefficients_h
+        updatedresult = electric_field_update_coefficients_e * self.electric_field_z[field_node_index] + updatingterm
         return updatedresult
 
     def _get_electric_field_update_coefficients_e(self, field_node_index):

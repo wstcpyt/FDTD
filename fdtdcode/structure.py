@@ -17,7 +17,8 @@ class Structureparameter():
     def _set_relative_permittivity(self):
         self.relative_permittivity = np.zeros(self.mesh_size)
         for field_node_index in range(self.mesh_size):
-            self.relative_permittivity[field_node_index] = self._get_relative_permittivity_in_single_node(field_node_index)
+            self.relative_permittivity[field_node_index] = self._get_relative_permittivity_in_single_node(
+                field_node_index)
 
     @staticmethod
     def _get_relative_permittivity_in_single_node(field_node_index):
@@ -39,10 +40,10 @@ class Structureparameter():
         if field_node_index < 100:
             return self.updatecoefficient
         else:
-            return self.updatecoefficient/self.relative_permittivity[field_node_index]/(1.0 + self.loss)
+            return self.updatecoefficient / self.relative_permittivity[field_node_index] / (1.0 + self.loss)
 
     def _get_electric_field_update_coefficients_e(self, field_node_index):
         if field_node_index < 100:
             return 1.0
         else:
-            return (1.0 - self.loss)/(1.0 + self.loss)
+            return (1.0 - self.loss) / (1.0 + self.loss)

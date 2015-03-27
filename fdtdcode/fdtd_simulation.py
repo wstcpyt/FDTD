@@ -32,8 +32,8 @@ class FDTDsimulation():
 
     def _reshape_field_time(self):
         row_length = self.max_time
-        col_length_electric = len(self.electric_field_time)/row_length
-        col_length_magnetic = len(self.magnetic_field_time)/row_length
+        col_length_electric = len(self.electric_field_time) / row_length
+        col_length_magnetic = len(self.magnetic_field_time) / row_length
         self.magnetic_field_time = self.magnetic_field_time.reshape(row_length, col_length_magnetic)
         self.electric_field_time = self.electric_field_time.reshape(row_length, col_length_electric)
 
