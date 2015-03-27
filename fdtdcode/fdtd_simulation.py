@@ -1,33 +1,32 @@
 __author__ = 'yutongpang'
 import numpy as np
 from fdtdcode.field import Meshnodefield
-from fdtdcode.source import Source
 from fdtdcode.structure import Structureparameter
 from fdtdcode.boundaryconditon import TFSFboundarycondition
 
 
 class FDTDsimulation():
     def __init__(self, mesh_size, max_time):
-        self.mesh_size = mesh_size
-        self.max_time = max_time
-        self.structureparameter = Structureparameter(self.mesh_size)
+        self._init_constant_and_variable(mesh_size, max_time)
+        self.structureparameter = Structureparameter(mesh_size)
         self.meshnodefield = Meshnodefield(mesh_size)
         self.meshnodefield.relative_permittivity = self.structureparameter.relative_permittivity
-        self.meshnodefield.electric_field_update_coefficients_E = \
-            self.structureparameter.electric_field_update_coefficients_E
-        self.meshnodefield.electric_field_update_coefficients_H = \
-            self.structureparameter.electric_field_update_coefficients_H
-        self.source = Source(0)
+        self.meshnodefield.electric_field_update_coefficients_e = \
+            self.structureparameter.electric_field_update_coefficients_e
+        self.meshnodefield.electric_field_update_coefficients_h = \
+            self.structureparameter.electric_field_update_coefficients_h
         self.tfsfboundarycondition = TFSFboundarycondition(0)
 
-    magnetic_field_time = np.array([])
-    electric_field_time = np.array([])
+    def _init_constant_and_variable(self, mesh_size, max_time):
+        self.mesh_size = mesh_size
+        self.max_time = max_time
+        self.magnetic_field_time = np.array([])
+        self.electric_field_time = np.array([])
 
     def envole_field_with_time(self):
         for time_node_index in range(0, self.max_time):
             self._envole_magnetic_field(time_node_index)
             self._envole_electric_field(time_node_index)
-            self._attach_additive_source(time_node_index)
             self._apend_field_to_field_time_array()
         self._reshape_field_time()
 
@@ -57,7 +56,3 @@ class FDTDsimulation():
     def _apend_field_to_field_time_array(self):
         self.electric_field_time = np.append(self.electric_field_time, self.meshnodefield.electric_field_z)
         self.magnetic_field_time = np.append(self.magnetic_field_time, self.meshnodefield.magnetic_field_y)
-
-    def _attach_additive_source(self, time_node_index):
-        field_at_source_node = self.source.get_additive_source_function_at_time_node_index(time_node_index)
-        self.meshnodefield.electric_field_z[self.source.source_node] += field_at_source_node

@@ -11,18 +11,23 @@ class FDTDsimulationTest(unittest.TestCase):
     def setUp(self):
         self.fdtdsimulation = FDTDsimulation(3, 2)
 
-    def test_fdtdsimulation_can_init_mesh_size_and_max_time(self):
-        self.assertEqual(self.fdtdsimulation.mesh_size, 3)
-        self.assertEqual(self.fdtdsimulation.max_time, 2)
+    @patch.object(FDTDsimulation, '_init_constant_and_variable')
+    def test_init_fdtdsimulation(self, mock_init_constant_and_variable):
+        self.fdtdsimulation = FDTDsimulation(3, 2)
+        mock_init_constant_and_variable.assert_called_once_with(3, 2)
+
+    def test_init_constant_and_variable(self):
+        self.assertEquals(self.fdtdsimulation.mesh_size, 3)
+        self.assertEquals(self.fdtdsimulation.max_time, 2)
+        self.assertEquals(len(self.fdtdsimulation.magnetic_field_time), 0)
+        self.assertEquals(len(self.fdtdsimulation.electric_field_time), 0)
 
     @patch.object(FDTDsimulation, '_envole_magnetic_field')
     @patch.object(FDTDsimulation, '_envole_electric_field')
-    @patch.object(FDTDsimulation, '_attach_additive_source')
     @patch.object(FDTDsimulation, '_apend_field_to_field_time_array')
     @patch.object(FDTDsimulation, '_reshape_field_time')
     def test_envole_field_with_time_electric(self, mock_reshape_field_time,
                                              mock_apend_field_to_field_time_array,
-                                             mock_attach_additive_source,
                                              mock_envole_electric_field,
                                              mock_envole_magnetic_field
                                              ):
@@ -30,17 +35,8 @@ class FDTDsimulationTest(unittest.TestCase):
         self.fdtdsimulation.envole_field_with_time()
         mock_reshape_field_time.assert_called_once_with()
         mock_apend_field_to_field_time_array.assert_called_once_with()
-        mock_attach_additive_source.assert_called_once_with(0)
         mock_envole_electric_field.assert_called_once_with(0)
         mock_envole_magnetic_field.assert_called_once_with(0)
-
-    @patch.object(Source, 'get_additive_source_function_at_time_node_index')
-    def test_additive_source_can_change_field_at_source_node_at_time_node_index(self, mock_source_function):
-        mock_source_function.return_value = 50
-        source_node = 1
-        self.fdtdsimulation.source.source_node = source_node
-        self.fdtdsimulation._attach_additive_source(0)
-        self.assertEqual(50, self.fdtdsimulation.meshnodefield.electric_field_z[source_node])
 
     @patch.object(FDTDsimulation, '_add_electric_tfsf_source_correction')
     def test_envole_electric_field_call_source_correction(self, mock_call_function):
