@@ -16,13 +16,12 @@ class MeshnodefieldTest(unittest.TestCase):
     def test_init_meshnodefield(self, mock_init_constant_and_variable):
         self.meshnodefield = Meshnodefield(2)
         mock_init_constant_and_variable.assert_called_once_with(2)
+        self.fail('finish the test')
 
     def test_init_constant_and_variable(self):
         self.assertEquals(self.meshnodefield.mesh_size, 2)
         self.assertEquals(len(self.meshnodefield.magnetic_field_y), 1)
         self.assertEquals(len(self.meshnodefield.electric_field_z), 2)
-        self.assertEquals(len(self.meshnodefield.electric_field_update_coefficients_e), 2)
-        self.assertEquals(len(self.meshnodefield.electric_field_update_coefficients_h), 2)
 
     def test_electric_node_size(self):
         size = len(self.meshnodefield.electric_field_z)
@@ -81,15 +80,13 @@ class MeshnodefieldTest(unittest.TestCase):
         mock_get_electric_field_update_coefficients_e.assert_called_once_with(1)
         mock_get_electric_field_update_coefficients_h.assert_called_once_with(1)
 
-    def test_get_lossy_matrial_update_coefficient_electric(self):
-        self.__initiate_meshnodefield_variable()
-        self.meshnodefield.electric_field_update_coefficients_e = np.array([1, 2, 3])
+    def test_get_electric_field_update_coefficients_e(self):
+        self.meshnodefield.structureparameter.electric_field_update_coefficients_e[1] = 2
         result = self.meshnodefield._get_electric_field_update_coefficients_e(1)
         self.assertEquals(2, result)
 
-    def test_get_lossy_matrial_update_coefficient_magnetic(self):
-        self.__initiate_meshnodefield_variable()
-        self.meshnodefield.electric_field_update_coefficients_h = np.array([1, 2, 3])
+    def test_get_electric_field_update_coefficients_h(self):
+        self.meshnodefield.structureparameter.electric_field_update_coefficients_h[1] = 2
         result = self.meshnodefield._get_electric_field_update_coefficients_h(1)
         self.assertEquals(2, result)
 

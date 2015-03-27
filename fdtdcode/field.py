@@ -1,10 +1,12 @@
 __author__ = 'yutongpang'
 import numpy as np
+from fdtdcode.structure import Structureparameter
 
 
 class Meshnodefield():
     def __init__(self, mesh_size):
         self._init_constant_and_variable(mesh_size)
+        self.structureparameter = Structureparameter(mesh_size)
 
     updatecoefficient = 377
 
@@ -12,8 +14,6 @@ class Meshnodefield():
         self.mesh_size = mesh_size
         self.magnetic_field_y = np.zeros(mesh_size - 1)
         self.electric_field_z = np.zeros(mesh_size)
-        self.electric_field_update_coefficients_e = np.zeros(mesh_size)
-        self.electric_field_update_coefficients_h = np.zeros(mesh_size)
 
     def update_magnetic_field_mesh(self):
         for field_node_index in range(0, self.mesh_size-1):
@@ -47,7 +47,7 @@ class Meshnodefield():
         return updatedresult
 
     def _get_electric_field_update_coefficients_e(self, field_node_index):
-        return self.electric_field_update_coefficients_e[field_node_index]
+        return self.structureparameter.electric_field_update_coefficients_e[field_node_index]
 
     def _get_electric_field_update_coefficients_h(self, field_node_index):
-        return self.electric_field_update_coefficients_h[field_node_index]
+        return self.structureparameter.electric_field_update_coefficients_h[field_node_index]

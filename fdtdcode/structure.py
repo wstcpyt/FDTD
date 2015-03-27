@@ -1,6 +1,5 @@
 __author__ = 'yutongpang'
 import numpy as np
-from fdtdcode.field import Meshnodefield
 
 
 class Structureparameter():
@@ -8,6 +7,8 @@ class Structureparameter():
         self._init_constant_and_variable(mesh_size)
         self._set_relative_permittivity()
         self._set_electric_field_update_coefficients()
+
+    updatecoefficient = 377
 
     def _init_constant_and_variable(self, mesh_size):
         self.loss = 0.01
@@ -36,9 +37,9 @@ class Structureparameter():
 
     def _get_electric_field_update_coefficients_h(self, field_node_index):
         if field_node_index < 100:
-            return Meshnodefield.updatecoefficient
+            return self.updatecoefficient
         else:
-            return Meshnodefield.updatecoefficient/self.relative_permittivity[field_node_index]/(1.0 + self.loss)
+            return self.updatecoefficient/self.relative_permittivity[field_node_index]/(1.0 + self.loss)
 
     def _get_electric_field_update_coefficients_e(self, field_node_index):
         if field_node_index < 100:
