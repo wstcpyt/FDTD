@@ -31,10 +31,18 @@ class Meshnodefield():
         self.electric_field_z[self.mesh_size - 1] = self.electric_field_z[self.mesh_size - 2]
 
     def _update_magnetic_field_single_node(self, field_node_index):
+        magnetic_field_update_coefficients_e = self._get_magnetic_field_update_coefficients_e(field_node_index)
+        magnetic_field_update_coefficients_h = self._get_magnetic_field_update_coefficients_h(field_node_index)
         updatingterm = (self.electric_field_z[field_node_index + 1] -
-                        self.electric_field_z[field_node_index]) / self.updatecoefficient
-        updatedresult = self.magnetic_field_y[field_node_index] + updatingterm
+                        self.electric_field_z[field_node_index]) * magnetic_field_update_coefficients_e
+        updatedresult = self.magnetic_field_y[field_node_index] * magnetic_field_update_coefficients_h + updatingterm
         return updatedresult
+
+    def _get_magnetic_field_update_coefficients_e(self, field_node_index):
+        return self.structureparameter.magnetic_field_update_coefficients_e[field_node_index]
+
+    def _get_magnetic_field_update_coefficients_h(self, field_node_index):
+        return self.structureparameter.magnetic_field_update_coefficients_h[field_node_index]
 
     def _update_electric_field_single_node(self, field_node_index):
         electric_field_update_coefficients_e \

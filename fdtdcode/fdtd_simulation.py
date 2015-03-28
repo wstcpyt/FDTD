@@ -8,13 +8,7 @@ from fdtdcode.boundaryconditon import TFSFboundarycondition
 class FDTDsimulation():
     def __init__(self, mesh_size, max_time):
         self._init_constant_and_variable(mesh_size, max_time)
-        self.structureparameter = Structureparameter(mesh_size)
         self.meshnodefield = Meshnodefield(mesh_size)
-        self.meshnodefield.relative_permittivity = self.structureparameter.relative_permittivity
-        self.meshnodefield.electric_field_update_coefficients_e = \
-            self.structureparameter.electric_field_update_coefficients_e
-        self.meshnodefield.electric_field_update_coefficients_h = \
-            self.structureparameter.electric_field_update_coefficients_h
         self.tfsfboundarycondition = TFSFboundarycondition(0)
 
     def _init_constant_and_variable(self, mesh_size, max_time):

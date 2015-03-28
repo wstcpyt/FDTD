@@ -3,7 +3,6 @@ from unittest.mock import patch
 import numpy.testing as npt
 import numpy as np
 from fdtdcode.fdtd_simulation import FDTDsimulation
-from fdtdcode.source import Source
 from fdtdcode.boundaryconditon import TFSFboundarycondition
 
 
@@ -76,3 +75,12 @@ class FDTDsimulationTest(unittest.TestCase):
         self.fdtdsimulation.magnetic_field_time = np.array([1, 2, 3, 4])
         self.fdtdsimulation.electric_field_time = np.array([1, 2, 3, 4, 5, 6])
         self.fdtdsimulation.max_time = 2
+
+    def test_apend_field_to_field_time_array(self):
+        self.fdtdsimulation.electric_field_time = np.array([1, 2, 3])
+        self.fdtdsimulation.magnetic_field_time = np.array([1, 2, 3])
+        self.fdtdsimulation.meshnodefield.electric_field_z = np.array([1, 2, 3])
+        self.fdtdsimulation.meshnodefield.magnetic_field_y = np.array([1, 2, 3])
+        self.fdtdsimulation._apend_field_to_field_time_array()
+        npt.assert_array_equal(self.fdtdsimulation.electric_field_time, np.array([1, 2, 3, 1, 2, 3]))
+        npt.assert_array_equal(self.fdtdsimulation.magnetic_field_time, np.array([1, 2, 3, 1, 2, 3]))
