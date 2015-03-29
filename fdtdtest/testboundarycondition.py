@@ -7,6 +7,7 @@ from unittest.mock import patch
 from fdtdcode.boundaryconditon import TFSFboundarycondition
 from math import exp
 from fdtdcode.field import Meshnodefield
+from fdtdcode.source import Source
 
 
 class TFSFboundaryconditonTEST(unittest.TestCase):
@@ -25,10 +26,14 @@ class TFSFboundaryconditonTEST(unittest.TestCase):
         self.tfsfboundarycondition.get_incidence_source_correction(0, 1)
         mock_electric_source_function.assert_called_once_with(0)
 
-    def test_get_magnetic_source_correction(self):
-        returnvalue = self.tfsfboundarycondition._get_magnetic_source_correction(1)
-        self.assertEqual(returnvalue, exp(-(1 - 30.0) ** 2 / 100.0) / Meshnodefield.updatecoefficient)
+    @patch.object(Source, 'get_additive_source_function_at_time_node_index')
+    def test_get_magnetic_source_correction(self, mock_get_additive_source_function_at_time_node_index):
+        mock_get_additive_source_function_at_time_node_index.return_value = 1.0
+        self.tfsfboundarycondition._get_magnetic_source_correction(1)
+        mock_get_additive_source_function_at_time_node_index.assert_called_once_with(1, 0)
 
-    def test_get_electric_source_correction(self):
-        returnvalue = self.tfsfboundarycondition._get_electric_source_correction(1)
-        self.assertEqual(returnvalue, exp(-(1 - 30.0 + 1) ** 2 / 100.0))
+    @patch.object(Source, 'get_additive_source_function_at_time_node_index')
+    def test_get_electric_source_correction(self, mock_get_additive_source_function_at_time_node_index):
+        mock_get_additive_source_function_at_time_node_index.return_value = 1.0
+        self.tfsfboundarycondition._get_electric_source_correction(1)
+        mock_get_additive_source_function_at_time_node_index.assert_called_once_with(1+0.5, -0.5)

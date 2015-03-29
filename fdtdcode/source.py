@@ -4,12 +4,11 @@ from fdtdcode.field import Meshnodefield
 
 
 class Source():
-    def __init__(self, source_node_index):
-        self._init_constant_variable(source_node_index)
+    def __init__(self):
+        self._init_constant_variable()
 
-    def _init_constant_variable(self, source_node_index):
+    def _init_constant_variable(self):
         self.points_per_wavelength = 40
-        self.source_node_index = source_node_index
 
     def get_additive_source_function_at_time_node_index(self, time_node_index, field_node_index):
         source_function_value = sin(
