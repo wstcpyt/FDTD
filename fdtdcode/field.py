@@ -9,6 +9,7 @@ class Meshnodefield():
         self.structureparameter = Structureparameter(mesh_size)
 
     updatecoefficient = 377
+    courant_number = 1.0
 
     def _init_constant_and_variable(self, mesh_size):
         self.mesh_size = mesh_size

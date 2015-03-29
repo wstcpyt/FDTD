@@ -27,8 +27,8 @@ class PermittivityTEST(unittest.TestCase):
 
     def test_init_constant_and_variable(self):
         self.assertEquals(self.structureparameter.mesh_size, 190)
-        self.assertEquals(self.structureparameter.loss, 0.02)
-        self.assertEqual(self.structureparameter.loss_layer, 180)
+        self.assertEquals(self.structureparameter.loss, 0.0253146)
+        self.assertEqual(self.structureparameter.loss_layer, 100)
 
     @patch.object(Structureparameter, '_get_relative_permittivity_in_single_node')
     def test_set_relative_permittivity(self, mock_get_relative_permittivity_in_single_node):
@@ -40,7 +40,7 @@ class PermittivityTEST(unittest.TestCase):
         returnvalue_node_less_100 = self.structureparameter._get_relative_permittivity_in_single_node(50)
         self.assertEquals(returnvalue_node_less_100, 1)
         returnvalue_node_equal_or_more_100 = self.structureparameter._get_relative_permittivity_in_single_node(150)
-        self.assertEquals(returnvalue_node_equal_or_more_100, 9)
+        self.assertEquals(returnvalue_node_equal_or_more_100, 4.0)
 
     @patch.object(Structureparameter, '_get_electric_field_update_coefficients_h')
     @patch.object(Structureparameter, '_get_electric_field_update_coefficients_e')
@@ -62,8 +62,6 @@ class PermittivityTEST(unittest.TestCase):
                           (1.0 - self.structureparameter.loss) / (1.0 + self.structureparameter.loss))
 
     def test_get_electric_field_update_coefficients_h(self):
-        returnvalue_node_less_100 = self.structureparameter._get_electric_field_update_coefficients_h(50)
-        self.assertEquals(returnvalue_node_less_100, Meshnodefield.updatecoefficient)
         returnvalue_node_less_loss_layer = self.structureparameter._get_electric_field_update_coefficients_h(
             self.structureparameter.loss_layer - 1)
         self.assertEqual(returnvalue_node_less_loss_layer,
@@ -87,19 +85,10 @@ class PermittivityTEST(unittest.TestCase):
         self.assertEqual(callcount_e, self.structureparameter.mesh_size)
 
     def test_get_magnetic_field_update_coefficients_e(self):
-        returnvalue_node_less_loss_layer = self.structureparameter._get_magnetic_field_update_coefficients_e(
-            self.structureparameter.loss_layer - 1)
-        self.assertEqual(returnvalue_node_less_loss_layer, 1.0 / self.structureparameter.updatecoefficient)
-        returnvalue_node_more_loss_layer = self.structureparameter._get_magnetic_field_update_coefficients_e(
-            self.structureparameter.loss_layer + 1)
-        self.assertEqual(returnvalue_node_more_loss_layer,
-                         1.0 / self.structureparameter.updatecoefficient / (1 + self.structureparameter.loss))
+        result = self.structureparameter._get_magnetic_field_update_coefficients_e()
+        self.assertEqual(result, 1.0 / Meshnodefield.updatecoefficient)
+
 
     def test_get_magnetic_field_update_coefficients_h(self):
-        returnvalue_node_less_loss_layer = self.structureparameter._get_magnetic_field_update_coefficients_h(
-            self.structureparameter.loss_layer - 1)
-        self.assertEqual(returnvalue_node_less_loss_layer, 1.0)
-        returnvalue_node_more_loss_layer = self.structureparameter._get_magnetic_field_update_coefficients_h(
-            self.structureparameter.loss_layer + 1)
-        self.assertEqual(returnvalue_node_more_loss_layer,
-                         (1.0 - self.structureparameter.loss) / (1.0 + self.structureparameter.loss))
+        result = self.structureparameter._get_magnetic_field_update_coefficients_h()
+        self.assertEqual(result, 1.0)
