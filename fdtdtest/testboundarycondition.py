@@ -5,8 +5,6 @@ sys.path.append('/Users/yutongpang/PycharmProjects/FDTD')
 import unittest
 from unittest.mock import patch
 from fdtdcode.boundaryconditon import TFSFboundarycondition
-from math import exp
-from fdtdcode.field import Meshnodefield
 from fdtdcode.source import Source
 
 

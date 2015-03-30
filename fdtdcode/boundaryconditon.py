@@ -1,5 +1,4 @@
 __author__ = 'yutongpang'
-from math import exp
 from fdtdcode.field import Meshnodefield
 from fdtdcode.source import Source
 
