@@ -1,7 +1,6 @@
 __author__ = 'yutongpang'
 import numpy as np
 from fdtdcode.field import Meshnodefield
-from fdtdcode.structure import Structureparameter
 from fdtdcode.boundaryconditon import TFSFboundarycondition
 
 

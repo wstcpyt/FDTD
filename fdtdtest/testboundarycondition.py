@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 from fdtdcode.boundaryconditon import TFSFboundarycondition
 from fdtdcode.source import Source
+from fdtdcode.boundaryconditon import Absorption
 
 
 class TFSFboundaryconditonTEST(unittest.TestCase):
@@ -34,4 +35,51 @@ class TFSFboundaryconditonTEST(unittest.TestCase):
     def test_get_electric_source_correction(self, mock_get_additive_source_function_at_time_node_index):
         mock_get_additive_source_function_at_time_node_index.return_value = 1.0
         self.tfsfboundarycondition._get_electric_source_correction(1)
-        mock_get_additive_source_function_at_time_node_index.assert_called_once_with(1+0.5, -0.5)
+        mock_get_additive_source_function_at_time_node_index.assert_called_once_with(1 + 0.5, -0.5)
+
+
+class AbsorptionTEST(unittest.TestCase):
+    def setUp(self):
+        self.absorption =Absorption(100)
+
+    @patch.object(Absorption, '_set_absorption_rightend_coefficient')
+    @patch.object(Absorption, '_init_constant_and_variable')
+    @patch.object(Absorption, '_set_absorption_leftend_coefficient')
+    def test_init_absorption(self, mock__set_absorption_leftend_coefficient,
+                             mock_init_constant_and_variable,
+                             mock_set_absorption_rightend_coefficient):
+        Absorption(100)
+        mock__set_absorption_leftend_coefficient.assert_called_once_with()
+        mock_set_absorption_rightend_coefficient.assert_called_once_with()
+        mock_init_constant_and_variable.assert_called_once_with(100)
+
+    def test_init_constant_and_variable(self):
+        self.assertEquals(self.absorption.mesh_size, 100)
+        self.assertEquals(len(self.absorption.electric_field_update_coefficients_h), 100)
+        self.assertEquals(len(self.absorption.magnetic_field_update_coefficients_e), 100)
+
+    @patch.object(Absorption, '_get_absorption_leftend_coefficient')
+    def test_set_absorption_leftend_coefficient(self, mock_get_absorption_leftend_coefficient):
+        mock_get_absorption_leftend_coefficient.return_value = 2.0
+        self.absorption._set_absorption_leftend_coefficient()
+        mock_get_absorption_leftend_coefficient.assert_called_once_with()
+        self.assertEquals(self.absorption.absorption_leftend_coefficient, 2.0)
+
+    def test_get_absorption_leftend_coefficient(self):
+        self.absorption.electric_field_update_coefficients_h[0] = 1
+        self.absorption.magnetic_field_update_coefficients_e[0] = 1
+        return_value = self.absorption._get_absorption_leftend_coefficient()
+        self.assertEquals(return_value, 0)
+
+    @patch.object(Absorption, '_get_absorption_rightend_coefficient')
+    def test_set_absorption_rightend_coefficient(self, mock_get_absorption_rightend_coefficient):
+        mock_get_absorption_rightend_coefficient.return_value = 2.0
+        self.absorption._set_absorption_rightend_coefficient()
+        mock_get_absorption_rightend_coefficient.assert_called_once_with()
+        self.assertEquals(self.absorption.absorption_rightend_coefficient, 2.0)
+
+    def test_get_absorption_rightend_coefficient(self):
+        self.absorption.electric_field_update_coefficients_h[99] = 1
+        self.absorption.magnetic_field_update_coefficients_e[98] = 1
+        return_value = self.absorption._get_absorption_rightend_coefficient()
+        self.assertEquals(return_value, 0)
