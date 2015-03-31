@@ -3,7 +3,8 @@ from unittest.mock import patch
 import numpy.testing as npt
 import numpy as np
 from fdtdcode.fdtd_simulation import FDTDsimulation
-from fdtdcode.boundaryconditon import TFSFboundarycondition
+from fdtdcode.boundaryconditon import TFSFboundarycondition, Absorption
+from fdtdcode.field import Meshnodefield
 
 
 class FDTDsimulationTest(unittest.TestCase):
@@ -37,10 +38,27 @@ class FDTDsimulationTest(unittest.TestCase):
         mock_envole_electric_field.assert_called_once_with(0)
         mock_envole_magnetic_field.assert_called_once_with(0)
 
+    @patch.object(FDTDsimulation, '_set_absorption_boundary_condition')
+    @patch.object(Meshnodefield, 'update_electric_field_mesh')
     @patch.object(FDTDsimulation, '_add_electric_tfsf_source_correction')
-    def test_envole_electric_field_call_source_correction(self, mock_call_function):
+    def test_envole_electric_field_call_source_correction(self, mock_add_electric_tfsf_source_correction,
+                                                          mock_update_electric_field_mesh,
+                                                          mock_set_absorption_boundary_condition):
         self.fdtdsimulation._envole_electric_field(0)
-        mock_call_function.assert_called_once_with(0)
+        mock_add_electric_tfsf_source_correction.assert_called_once_with(0)
+        mock_update_electric_field_mesh.assert_called_once_with()
+        mock_set_absorption_boundary_condition.assert_called_once_with()
+
+    @patch.object(Absorption, 'get_electric_field_at_right_end')
+    @patch.object(Absorption, 'get_electric_field_at_left_end')
+    def test_set_absorption_boundary_condition(self, mock_get_electric_field_at_left_end, mock_get_electric_field_at_right_end):
+        mock_get_electric_field_at_right_end.return_value = 2.0
+        mock_get_electric_field_at_left_end.return_value = 2.0
+        self.fdtdsimulation._set_absorption_boundary_condition()
+        mock_get_electric_field_at_left_end.assert_called_once_with(0.0, 0.0)
+        mock_get_electric_field_at_right_end.assert_called_once_with(0.0, 0.0)
+        self.assertEquals(self.fdtdsimulation.meshnodefield.electric_field_z[0], 2.0)
+        self.assertEquals(self.fdtdsimulation.meshnodefield.electric_field_z[2], 2.0)
 
     @patch.object(FDTDsimulation, '_add_magnetic_tfsf_source_correction')
     def test_envole_magnetic_field_call_source_correction(self, mock_call_function):

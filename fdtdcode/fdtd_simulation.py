@@ -1,7 +1,7 @@
 __author__ = 'yutongpang'
 import numpy as np
 from fdtdcode.field import Meshnodefield
-from fdtdcode.boundaryconditon import TFSFboundarycondition
+from fdtdcode.boundaryconditon import TFSFboundarycondition, Absorption
 
 
 class FDTDsimulation():
@@ -9,6 +9,9 @@ class FDTDsimulation():
         self._init_constant_and_variable(mesh_size, max_time)
         self.meshnodefield = Meshnodefield(mesh_size)
         self.tfsfboundarycondition = TFSFboundarycondition(0)
+        self.absorption = Absorption(mesh_size,
+                                     self.meshnodefield.structureparameter.electric_field_update_coefficients_h,
+                                     self.meshnodefield.structureparameter.magnetic_field_update_coefficients_e)
 
     def _init_constant_and_variable(self, mesh_size, max_time):
         self.mesh_size = mesh_size
@@ -31,8 +34,16 @@ class FDTDsimulation():
         self.electric_field_time = self.electric_field_time.reshape(row_length, col_length_electric)
 
     def _envole_electric_field(self, time_node_index):
-        self.meshnodefield.update_electric_field_mesh()
         self._add_electric_tfsf_source_correction(time_node_index)
+        self.meshnodefield.update_electric_field_mesh()
+        self._set_absorption_boundary_condition()
+
+    def _set_absorption_boundary_condition(self):
+        self.meshnodefield.electric_field_z[0] = self.absorption.get_electric_field_at_left_end(
+            self.meshnodefield.electric_field_z[1], self.meshnodefield.electric_field_z[0])
+        self.meshnodefield.electric_field_z[self.mesh_size - 1] = self.absorption.get_electric_field_at_right_end(
+            self.meshnodefield.electric_field_z[self.mesh_size - 2],
+            self.meshnodefield.electric_field_z[self.mesh_size - 1])
 
     def _envole_magnetic_field(self, time_node_index):
         self.meshnodefield.update_magnetic_field_mesh()

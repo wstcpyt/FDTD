@@ -27,7 +27,7 @@ class PermittivityTEST(unittest.TestCase):
 
     def test_init_constant_and_variable(self):
         self.assertEquals(self.structureparameter.mesh_size, 190)
-        self.assertEquals(self.structureparameter.loss, 0.0253146)
+        self.assertEquals(self.structureparameter.loss, 0)
         self.assertEqual(self.structureparameter.loss_layer, 100)
 
     @patch.object(Structureparameter, '_get_relative_permittivity_in_single_node')
@@ -87,7 +87,6 @@ class PermittivityTEST(unittest.TestCase):
     def test_get_magnetic_field_update_coefficients_e(self):
         result = self.structureparameter._get_magnetic_field_update_coefficients_e()
         self.assertEqual(result, 1.0 / Meshnodefield.updatecoefficient)
-
 
     def test_get_magnetic_field_update_coefficients_h(self):
         result = self.structureparameter._get_magnetic_field_update_coefficients_h()

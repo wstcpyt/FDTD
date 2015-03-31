@@ -6,6 +6,7 @@ import numpy as np
 import numpy.testing as npt
 
 from fdtdcode.field import Meshnodefield
+from fdtdcode.boundaryconditon import Absorption
 
 
 class MeshnodefieldTest(unittest.TestCase):
@@ -47,16 +48,10 @@ class MeshnodefieldTest(unittest.TestCase):
         self.__initiate_meshnodefield_variable()
         mock_update_electric_field.return_value = 2.0
         result = self.meshnodefield.update_electric_field_mesh()
-        npt.assert_array_equal(result, np.array([2.0, 2.0, 2.0]))
+        npt.assert_array_equal(result, np.array([1.0, 2.0, 3.0]))
 
     def test_meshnodefield_can_init_mesh_size(self):
         self.assertEqual(self.meshnodefield.mesh_size, 2)
-
-    def test_absorption_boundary_condition_electric(self):
-        self.__initiate_meshnodefield_variable()
-        self.meshnodefield._set_electric_boundary_condition()
-        result = self.meshnodefield.electric_field_z
-        npt.assert_array_equal(result, np.array([2.0, 2.0, 2.0]))
 
     @patch.object(Meshnodefield, '_get_magnetic_field_update_coefficients_h')
     @patch.object(Meshnodefield, '_get_magnetic_field_update_coefficients_e')

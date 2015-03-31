@@ -12,7 +12,7 @@ class Structureparameter():
     updatecoefficient = 377
 
     def _init_constant_and_variable(self, mesh_size):
-        self.loss = 0.0253146
+        self.loss = 0.0
         self.mesh_size = mesh_size
         self.loss_layer = 100
 

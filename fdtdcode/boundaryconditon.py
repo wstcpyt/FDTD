@@ -26,15 +26,19 @@ class TFSFboundarycondition():
 
 
 class Absorption():
-    def __init__(self, mesh_size):
-        self._init_constant_and_variable(mesh_size)
+    def __init__(self, mesh_size, electric_field_update_coefficients_h, magnetic_field_update_coefficients_e):
+        self._init_constant_and_variable(mesh_size, electric_field_update_coefficients_h,
+                                         magnetic_field_update_coefficients_e)
         self._set_absorption_leftend_coefficient()
         self._set_absorption_rightend_coefficient()
 
-    def _init_constant_and_variable(self, mesh_size):
+    def _init_constant_and_variable(self, mesh_size, electric_field_update_coefficients_h,
+                                    magnetic_field_update_coefficients_e):
         self.mesh_size = mesh_size
-        self.electric_field_update_coefficients_h = np.zeros(mesh_size)
-        self.magnetic_field_update_coefficients_e = np.zeros(mesh_size)
+        self.electric_field_update_coefficients_h = electric_field_update_coefficients_h
+        self.magnetic_field_update_coefficients_e = magnetic_field_update_coefficients_e
+        self.electric_old_left = 0.0
+        self.electric_old_right = 0.0
 
     def _set_absorption_leftend_coefficient(self):
         self.absorption_leftend_coefficient = self._get_absorption_leftend_coefficient()
@@ -51,3 +55,22 @@ class Absorption():
             self.electric_field_update_coefficients_h[self.mesh_size - 1] * self.magnetic_field_update_coefficients_e[
                 self.mesh_size - 2])
         return (temp_term - 1.0) / (temp_term + 1.0)
+
+    def get_electric_field_at_left_end(self, electric_field_node_1, electric_field_node_0):
+        result = self.electric_old_left + self.absorption_leftend_coefficient * (
+            electric_field_node_1 - electric_field_node_0)
+        self._set_electric_old_left(electric_field_node_1)
+        return result
+
+    def _set_electric_old_left(self, electric_field_node_1):
+        self.electric_old_left = electric_field_node_1
+
+    def get_electric_field_at_right_end(self, electric_field_node_meshsize_minus_2,
+                                        electric_field_node_meshsize_minus_1):
+        result = self.electric_old_right + self.absorption_rightend_coefficient * (
+            electric_field_node_meshsize_minus_2 - electric_field_node_meshsize_minus_1)
+        self._set_electric_old_right(electric_field_node_meshsize_minus_2)
+        return result
+
+    def _set_electric_old_right(self, electric_field_node_meshsize_minus_2):
+        self.electric_old_right = electric_field_node_meshsize_minus_2
