@@ -40,10 +40,10 @@ class FDTDsimulation():
 
     def _set_absorption_boundary_condition(self):
         self.meshnodefield.electric_field_z[0] = self.absorption.get_electric_field_at_left_end(
-            self.meshnodefield.electric_field_z[1], self.meshnodefield.electric_field_z[0])
+            self.meshnodefield.electric_field_z[2], self.meshnodefield.electric_field_z[1])
         self.meshnodefield.electric_field_z[self.mesh_size - 1] = self.absorption.get_electric_field_at_right_end(
-            self.meshnodefield.electric_field_z[self.mesh_size - 2],
-            self.meshnodefield.electric_field_z[self.mesh_size - 1])
+            self.meshnodefield.electric_field_z[self.mesh_size - 3],
+            self.meshnodefield.electric_field_z[self.mesh_size - 2])
 
     def _envole_magnetic_field(self, time_node_index):
         self.meshnodefield.update_magnetic_field_mesh()

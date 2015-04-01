@@ -56,7 +56,7 @@ class FDTDsimulationTest(unittest.TestCase):
         mock_get_electric_field_at_left_end.return_value = 2.0
         self.fdtdsimulation._set_absorption_boundary_condition()
         mock_get_electric_field_at_left_end.assert_called_once_with(0.0, 0.0)
-        mock_get_electric_field_at_right_end.assert_called_once_with(0.0, 0.0)
+        mock_get_electric_field_at_right_end.assert_called_once_with(2.0, 0.0)
         self.assertEquals(self.fdtdsimulation.meshnodefield.electric_field_z[0], 2.0)
         self.assertEquals(self.fdtdsimulation.meshnodefield.electric_field_z[2], 2.0)
 
