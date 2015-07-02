@@ -51,7 +51,8 @@ class FDTDsimulationTest(unittest.TestCase):
 
     @patch.object(Absorption, 'get_electric_field_at_right_end')
     @patch.object(Absorption, 'get_electric_field_at_left_end')
-    def test_set_absorption_boundary_condition(self, mock_get_electric_field_at_left_end, mock_get_electric_field_at_right_end):
+    def test_set_absorption_boundary_condition(self, mock_get_electric_field_at_left_end,
+                                               mock_get_electric_field_at_right_end):
         mock_get_electric_field_at_right_end.return_value = 2.0
         mock_get_electric_field_at_left_end.return_value = 2.0
         self.fdtdsimulation._set_absorption_boundary_condition()
